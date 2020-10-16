@@ -1,0 +1,26 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Line	rent.c	/^char Line[MAXLINE];$/;"	v
+MAXLINE	rent.c	/^#define MAXLINE /;"	d	file:
+MAXORDER	rent.c	/^#define MAXORDER /;"	d	file:
+MAXTIME	rent.c	/^#define MAXTIME /;"	d	file:
+Max_order	rent.c	/^int Max_order;$/;"	v
+Orders	rent.c	/^} Orders[MAXORDER];$/;"	v	typeref:struct:order
+add_sentinel	rent.c	/^void add_sentinel() {$/;"	f
+calc_value	rent.c	/^int calc_value() {$/;"	f
+compare_orders	rent.c	/^int compare_orders(const void *a, const void *b) {$/;"	f
+end_time	rent.c	/^    int end_time;$/;"	m	struct:order	file:
+get_int	rent.c	/^int get_int(char *line) {$/;"	f
+get_line	rent.c	/^char *get_line(char *line) {$/;"	f
+get_orders	rent.c	/^void get_orders() {$/;"	f
+main	rent.c	/^int main() {$/;"	f
+max	rent.c	/^int max(int a, int b) {$/;"	f
+next_compatible	rent.c	/^int next_compatible(int j, int max_orders) {$/;"	f
+order	rent.c	/^struct order{$/;"	s	file:
+sort_orders	rent.c	/^void sort_orders() {$/;"	f
+start_time	rent.c	/^    int start_time;$/;"	m	struct:order	file:
+value	rent.c	/^    int value;$/;"	m	struct:order	file:
