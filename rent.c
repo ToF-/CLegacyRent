@@ -1,77 +1,67 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAXLINE 40
+#define BUFFERMAX 40
 #define MAXORDER 10001
-#define MAXTIME 2000000
+#define INFNTY 2000000
 
 struct order{
     int start;
-    int end_time;
-    int price;
+    int duration;
+    int best;
 } Orders[MAXORDER];
 
-char Line[MAXLINE];
-
-char *get_line(char *line) {
-    fgets(line, MAXLINE, stdin);
-    return line;
-}
-
-int get_int(char *line) {
-    int result;
-    sscanf(get_line(line), "%d", &result);
-    return result;
-}
-
-int max(int a, int b) {
-    return a > b ? a : b;
-}
-
-int compare_orders(const void *a, const void *b) {
-    struct order *pa = (struct order *)a;
-    struct order *pb = (struct order *)b;
-    if (pa->start < pb->start)
-        return -1;
-    else if (pa->start > pb->start)
-        return 1;
-    else 
-        return (pa->end_time - pb->end_time);
-}
+char buf[BUFFERMAX];
+char id[BUFFERMAX];
 int main() {
-    int max_cases = get_int(Line);
-    for(int i=0; i<max_cases; i++) {
-        int max_order = get_int(Line);
-        for(int j = 0; j < max_order; j++) {
-            int start, duration, price;
-            get_line(Line);
-            sscanf(Line, "%d %d %d", &start, &duration, &price);
-
-            Orders[j].start = start;
-            Orders[j].end_time   = start+duration;
-            Orders[j].price      = price; 
+    int max1;
+    fgets(buf, BUFFERMAX, stdin);
+    sscanf(buf, "%d", &max1);
+    for(int i=0; i<max1; i++) {
+        int max2;
+        fgets(buf, BUFFERMAX, stdin);
+        sscanf(buf, "%d", &max2);
+        for(int j = 0; j < max2; j++) {
+            int a, b, c;
+            fgets(buf, BUFFERMAX, stdin);
+            sscanf(buf, "%s %d %d %d", id, &a, &b, &c);
+            Orders[j].start = a;
+            Orders[j].duration = b;
+            Orders[j].best      = c;
         }
-        qsort(Orders, max_order, sizeof(struct order), compare_orders);
-        Orders[max_order].start = MAXTIME;
-        Orders[max_order].end_time   = MAXTIME;
-        Orders[max_order].price      = 0;
-        max_order++;
-        for(int j = max_order-2; j >= 0; j--) {
-            int l = j+1;
-            int h = max_order;
-            int m;
-            int k;
+        FILE *out = fopen("temp","w");
+        for(int j = 0; j < max2; j++) {
+            fprintf(out, "%010d %010d %010d\n", Orders[j].start, Orders[j].duration, Orders[j].best);
+        }
+        fclose(out);
+        system("sort temp > temps");
+        FILE *in = fopen("temps","r");
+        for(int j = 0; j < max2; j++) {
+            int a, b, c;
+            fgets(buf, BUFFERMAX, in);
+            sscanf(buf, "%d %d %d", &a, &b, &c);
+            Orders[j].start = a;
+            Orders[j].duration = b;
+            Orders[j].best      = c;
+        }
+        fclose(in);
+        Orders[max2].start = INFNTY;
+        Orders[max2].duration   = 0;
+        Orders[max2].best      = 0;
+        max2++;
+        for(int j = max2-2; j >= 0; j--) {
+            int l = j+1; int h = max2; int m; int k;
             while (l <= h) {
                 m = l + (h - l) / 2;
-                if(Orders[m].start < Orders[j].end_time)
+                if(Orders[m].start < Orders[j].start + Orders[j].duration)
                     l = m + 1;
                 else {
                     k = m;
                     h = m - 1;
                 }
             }
-            Orders[j].price = max(Orders[j+1].price, Orders[j].price + Orders[k].price);
+            Orders[j].best = Orders[j+1].best > Orders[j].best + Orders[k].best ? Orders[j+1].best : Orders[j].best + Orders[k].best;
         }
-        printf("%d\n", Orders[0].price);
+        printf("%d\n", Orders[0].best);
     }
     return 0;
 }
