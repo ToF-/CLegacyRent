@@ -20,10 +20,14 @@ TEST_GROUP(MyCode)
 
 TEST(MyCode, test1)
 {
-    LONGS_EQUAL(4, 2+2);
     STRCMP_EQUAL("hello", "world!");
 }
 
+TEST(MyCode, test2)
+{
+    LONGS_EQUAL(4, 2+2);
+    STRCMP_EQUAL("world!", "world!");
+}
 int
 main(int ac, char** av)
 {

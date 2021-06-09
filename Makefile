@@ -13,8 +13,7 @@ large: rent
 
 # Points to the root of CppUTest, relative to where this file is.
 # Remember to tweak this if you move this file.
-#CPPUTEST_HOME = CppUTest
-CPPUTEST_HOME = cpputest
+CPPUTEST_HOME = ../cpputest
 
 # Where to find user code.
 USER_DIR = .
@@ -27,7 +26,7 @@ CFLAGS += -g -Wall -Wextra
 
 LD_LIBRARIES = -L$(CPPUTEST_HOME)/lib -lCppUTest
 unit : tests.c
-	$(CXX) $(CPPFLAGS) $(CFLAGS) -o unittests $(USER_DIR)/tests.c $(LD_LIBRARIES)
+	g++ $(CPPFLAGS) $(CFLAGS) -o unittests $(USER_DIR)/tests.c $(LD_LIBRARIES)
 	./unittests
 
 clean : 
