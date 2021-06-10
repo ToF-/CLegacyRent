@@ -16,10 +16,12 @@ int main() {
     int max1;
     fgets(buf, BUFFERMAX, stdin);
     sscanf(buf, "%d", &max1);
+    // boucle sur le nombre de blocs
     for(int i=0; i<max1; i++) {
         int max2;
         fgets(buf, BUFFERMAX, stdin);
         sscanf(buf, "%d", &max2);
+        // boucle sur le nombre de lignes du bloc
         for(int j = 0; j < max2; j++) {
             int a, b, c;
             fgets(buf, BUFFERMAX, stdin);
@@ -28,11 +30,14 @@ int main() {
             Orders[j].duration = b;
             Orders[j].best      = c;
         }
+        // se fait ch.. a réécrire un  fichier
+        // ^ on comprend que ça prend du temps
         FILE *out = fopen("temp","w");
         for(int j = 0; j < max2; j++) {
             fprintf(out, "%010d %010d %010d\n", Orders[j].start, Orders[j].duration, Orders[j].best);
         }
         fclose(out);
+        // ICI SYSTEM SORT
         system("sort temp > temps");
         FILE *in = fopen("temps","r");
         for(int j = 0; j < max2; j++) {
@@ -44,10 +49,13 @@ int main() {
             Orders[j].best      = c;
         }
         fclose(in);
+        // maintenant orders est trié
         Orders[max2].start = INFNTY;
         Orders[max2].duration   = 0;
         Orders[max2].best      = 0;
         max2++;
+        // tambouille pour savoir le meilleur chiffre d'affaire
+        //  NE PAS TOUCHER
         for(int j = max2-2; j >= 0; j--) {
             int l = j+1; int h = max2; int m; int k;
             while (l <= h) {
@@ -61,6 +69,7 @@ int main() {
             }
             Orders[j].best = Orders[j+1].best > Orders[j].best + Orders[k].best ? Orders[j+1].best : Orders[j].best + Orders[k].best;
         }
+        // le meilleur finit dans la meilleure case du tableau
         printf("%d\n", Orders[0].best);
     }
     return 0;
