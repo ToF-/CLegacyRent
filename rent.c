@@ -5,72 +5,89 @@
 #define INFNTY 2000000
 
 struct order{
+    char trade_id[BUFFERMAX];
     int start;
     int duration;
-    int best;
+    int revenue;
 } Orders[MAXORDER];
-
 char buf[BUFFERMAX];
 char id[BUFFERMAX];
+
+int compare(const void *a, const void *b) {
+
+    const struct order *orderA = a;
+    const struct order *orderB = b;
+
+    if(orderA->start < orderB->start)
+        return -1;
+    if(orderA->start > orderB->start)
+        return 1;
+    return orderA->duration - orderB->duration;
+
+}
+void sort_orders(int max2) {
+    // se fait ch.. a réécrire un  fichier
+    // ^ on comprend que ça prend du temps
+    qsort(Orders,max2, sizeof(struct order), compare); 
+}
+int next_compatible(int numOrder, int max2) {
+    int start = Orders[numOrder].start;
+    int end = start + Orders[numOrder].duration;
+    int low = numOrder+1; 
+    int high = max2; 
+    int middle; 
+    int k;
+    while (low <= high) {
+        middle = low + (high - low) / 2;
+        if(Orders[middle].start < end)
+            low = middle + 1;
+        else {
+            k = middle;
+            high = middle - 1;
+        }
+    }
+    return k;
+}
+
 int main() {
     int max1;
     fgets(buf, BUFFERMAX, stdin);
     sscanf(buf, "%d", &max1);
     // boucle sur le nombre de blocs
-    for(int i=0; i<max1; i++) {
+    for(int numBlock=0; numBlock<max1; numBlock++) {
         int max2;
         fgets(buf, BUFFERMAX, stdin);
         sscanf(buf, "%d", &max2);
         // boucle sur le nombre de lignes du bloc
-        for(int j = 0; j < max2; j++) {
-            int a, b, c;
+        for(int numOrder = 0; numOrder < max2; numOrder++) {
             fgets(buf, BUFFERMAX, stdin);
-            sscanf(buf, "%s %d %d %d", id, &a, &b, &c);
-            Orders[j].start = a;
-            Orders[j].duration = b;
-            Orders[j].best      = c;
+            sscanf(buf, "%40s %d %d %d"
+                      , Orders[numOrder].trade_id
+                      , &Orders[numOrder].start
+                      , &Orders[numOrder].duration
+                      , &Orders[numOrder].revenue);
         }
-        // se fait ch.. a réécrire un  fichier
-        // ^ on comprend que ça prend du temps
-        FILE *out = fopen("temp","w");
-        for(int j = 0; j < max2; j++) {
-            fprintf(out, "%010d %010d %010d\n", Orders[j].start, Orders[j].duration, Orders[j].best);
-        }
-        fclose(out);
-        // ICI SYSTEM SORT
-        system("sort temp > temps");
-        FILE *in = fopen("temps","r");
-        for(int j = 0; j < max2; j++) {
-            int a, b, c;
-            fgets(buf, BUFFERMAX, in);
-            sscanf(buf, "%d %d %d", &a, &b, &c);
-            Orders[j].start = a;
-            Orders[j].duration = b;
-            Orders[j].best      = c;
-        }
-        fclose(in);
-        // maintenant orders est trié
+        sort_orders(max2);
         Orders[max2].start = INFNTY;
         Orders[max2].duration   = 0;
-        Orders[max2].best      = 0;
+        Orders[max2].revenue      = 0;
         max2++;
-        // tambouille pour savoir le meilleur chiffre d'affaire
-        //  NE PAS TOUCHER
-        for(int j = max2-2; j >= 0; j--) {
-            int l = j+1; int h = max2; int m; int k;
-            while (l <= h) {
-                m = l + (h - l) / 2;
-                if(Orders[m].start < Orders[j].start + Orders[j].duration)
-                    l = m + 1;
-                else {
-                    k = m;
-                    h = m - 1;
-                }
+        // calcul du meilleur revenu
+        for(int numOrder = max2-2; numOrder >= 0; numOrder--) {
+            int compatible = next_compatible(numOrder, max2);
+            int next = numOrder+1;
+            int revenue_from_next = Orders[next].revenue;
+            int revenue_plus_compatible = Orders[numOrder].revenue + Orders[compatible].revenue;
+            if (revenue_from_next > revenue_plus_compatible) {
+                Orders[numOrder].revenue = revenue_from_next;
             }
-            Orders[j].best = Orders[j+1].best > Orders[j].best + Orders[k].best ? Orders[j+1].best : Orders[j].best + Orders[k].best;
+            else {
+                Orders[numOrder].revenue = revenue_plus_compatible;
+
+            }
         }
         // le meilleur finit dans la meilleure case du tableau
-        printf("%d\n", Orders[0].best);
+        printf("%d\n", Orders[0].revenue);
     }
     return 0;
 }
