@@ -9,20 +9,28 @@ struct order{
     int start;
     int duration;
     int revenue;
+    int best;
+    struct order *next;
 } Orders[MAXORDER];
+
 char buf[BUFFERMAX];
 char id[BUFFERMAX];
+struct order* first;
 
 int compare(const void *a, const void *b) {
 
-    const struct order *orderA = a;
-    const struct order *orderB = b;
+    struct order *orderA = (struct order *)a;
+    struct order *orderB = (struct order *)b;
 
     if(orderA->start < orderB->start)
         return -1;
     if(orderA->start > orderB->start)
         return 1;
-    return orderA->duration - orderB->duration;
+    if(orderA->duration < orderB->duration)
+        return -1;
+    if(orderA->duration > orderB->duration)
+        return 1;
+    return orderA->revenue - orderB->revenue;
 
 }
 void sort_orders(int max2) {
@@ -48,48 +56,86 @@ int next_compatible(int numOrder, int max2) {
     }
     return k;
 }
+void init_order(int index, const char *trade_id, int start, int duration, int revenue) {
+    sprintf(Orders[index].trade_id, "%8.8s", trade_id);
+    Orders[index].start = start;
+    Orders[index].duration = duration;
+    Orders[index].revenue = revenue;
+    Orders[index].best = 0;
+    Orders[index].next = NULL;
+}
 
+int compute_best_revenue(int max2) {
+    for(int numOrder = max2-2; numOrder >= 0; numOrder--) {
+        int compatible = next_compatible(numOrder, max2);
+        int next = numOrder+1;
+        int revenue_from_next = Orders[next].best;
+        int revenue_plus_compatible = Orders[numOrder].revenue + Orders[compatible].best;
+        if (revenue_from_next > revenue_plus_compatible) {
+            Orders[numOrder].best = revenue_from_next;
+            Orders[numOrder].next = &Orders[next];
+            first = &Orders[next];
+        }
+        else {
+            Orders[numOrder].best = revenue_plus_compatible;
+            Orders[numOrder].next = &Orders[compatible];
+            first = &Orders[numOrder];
+
+        }
+    }
+    return Orders[0].best;
+}
+
+int add_sentinel(int max2) {
+    Orders[max2].start = INFNTY;
+    Orders[max2].duration   = 0;
+    Orders[max2].revenue      = 0;
+    max2++;
+    return max2;
+}
+
+int process_orders(int max2) {
+    sort_orders(max2);
+    max2 = add_sentinel(max2);
+    return compute_best_revenue(max2);
+}
+
+int read_orders(char *buf, FILE *fp) {
+    int nb_orders;
+    fgets(buf, BUFFERMAX, stdin);
+    sscanf(buf, "%d", &nb_orders);
+    for(int numOrder = 0; numOrder < nb_orders; numOrder++) {
+        fgets(buf, BUFFERMAX, fp);
+        sscanf(buf, "%40s %d %d %d"
+                , Orders[numOrder].trade_id
+                , &Orders[numOrder].start
+                , &Orders[numOrder].duration
+                , &Orders[numOrder].revenue);
+        Orders[numOrder].next = NULL;
+    }
+    return nb_orders;
+}
+
+#ifndef IN_TEST
 int main() {
+#else
+int main_test() {
+#endif
     int max1;
     fgets(buf, BUFFERMAX, stdin);
     sscanf(buf, "%d", &max1);
     // boucle sur le nombre de blocs
     for(int numBlock=0; numBlock<max1; numBlock++) {
-        int max2;
-        fgets(buf, BUFFERMAX, stdin);
-        sscanf(buf, "%d", &max2);
-        // boucle sur le nombre de lignes du bloc
-        for(int numOrder = 0; numOrder < max2; numOrder++) {
-            fgets(buf, BUFFERMAX, stdin);
-            sscanf(buf, "%40s %d %d %d"
-                      , Orders[numOrder].trade_id
-                      , &Orders[numOrder].start
-                      , &Orders[numOrder].duration
-                      , &Orders[numOrder].revenue);
+        int nb_orders = read_orders(buf,stdin);
+        process_orders(nb_orders);
+        int total = 0;
+        struct order *order = first;
+        while(order != &Orders[nb_orders]) {
+            total += order->revenue;
+            printf("%8s %d\n", order->trade_id, total);
+            order = order->next;
         }
-        sort_orders(max2);
-        Orders[max2].start = INFNTY;
-        Orders[max2].duration   = 0;
-        Orders[max2].revenue      = 0;
-        max2++;
-        // calcul du meilleur revenu
-        for(int numOrder = max2-2; numOrder >= 0; numOrder--) {
-            int compatible = next_compatible(numOrder, max2);
-            int next = numOrder+1;
-            int revenue_from_next = Orders[next].revenue;
-            int revenue_plus_compatible = Orders[numOrder].revenue + Orders[compatible].revenue;
-            if (revenue_from_next > revenue_plus_compatible) {
-                Orders[numOrder].revenue = revenue_from_next;
-            }
-            else {
-                Orders[numOrder].revenue = revenue_plus_compatible;
-
-            }
-        }
-        // le meilleur finit dans la meilleure case du tableau
-        printf("%d\n", Orders[0].revenue);
+        printf("--------\n");
     }
     return 0;
 }
-
-

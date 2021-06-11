@@ -4,23 +4,35 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-Line	rent.c	/^char Line[MAXLINE];$/;"	v
-MAXLINE	rent.c	/^#define MAXLINE /;"	d	file:
+BUFFERMAX	rent.c	/^#define BUFFERMAX /;"	d	file:
+CPPUTEST_HOME	Makefile	/^CPPUTEST_HOME = ~\/dev\/cpputest$/;"	m
+INFNTY	rent.c	/^#define INFNTY /;"	d	file:
+IN_TEST	tests.c	/^#define IN_TEST /;"	d	file:
+LD_LIBRARIES	Makefile	/^LD_LIBRARIES = -L$(CPPUTEST_HOME)\/lib -lCppUTest$/;"	m
 MAXORDER	rent.c	/^#define MAXORDER /;"	d	file:
-MAXTIME	rent.c	/^#define MAXTIME /;"	d	file:
-Max_order	rent.c	/^int Max_order;$/;"	v
 Orders	rent.c	/^} Orders[MAXORDER];$/;"	v	typeref:struct:order
-add_sentinel	rent.c	/^void add_sentinel() {$/;"	f
-calc_value	rent.c	/^int calc_value() {$/;"	f
-compare_orders	rent.c	/^int compare_orders(const void *a, const void *b) {$/;"	f
-end_time	rent.c	/^    int end_time;$/;"	m	struct:order	file:
-get_int	rent.c	/^int get_int(char *line) {$/;"	f
-get_line	rent.c	/^char *get_line(char *line) {$/;"	f
-get_orders	rent.c	/^void get_orders() {$/;"	f
+TEST	tests.c	/^TEST(MyCode, given_one_order_result_is_order_revenue)$/;"	f
+TEST	tests.c	/^TEST(MyCode, given_several_compatible_and_competing_orders_result_is_best_revenue) $/;"	f
+TEST	tests.c	/^TEST(MyCode, given_two_compatible_orders_result_is_sum) $/;"	f
+TEST	tests.c	/^TEST(MyCode, given_two_competing_orders_result_is_best) $/;"	f
+TEST_GROUP	tests.c	/^TEST_GROUP(MyCode)$/;"	f
+USER_DIR	Makefile	/^USER_DIR = .$/;"	m
+add_sentinel	rent.c	/^int add_sentinel(int max2) {$/;"	f
+buf	rent.c	/^char buf[BUFFERMAX];$/;"	v
+compare	rent.c	/^int compare(const void *a, const void *b) {$/;"	f
+compute_best_revenue	rent.c	/^int compute_best_revenue(int max2) {$/;"	f
+duration	rent.c	/^    int duration;$/;"	m	struct:order	file:
+id	rent.c	/^char id[BUFFERMAX];$/;"	v
+included	rent.c	/^    int included;$/;"	m	struct:order	file:
+init_order	rent.c	/^void init_order(int index, char *trade_id, int start, int duration, int revenue) {$/;"	f
 main	rent.c	/^int main() {$/;"	f
-max	rent.c	/^int max(int a, int b) {$/;"	f
-next_compatible	rent.c	/^int next_compatible(int j, int max_orders) {$/;"	f
+main	tests.c	/^int main(int ac, char** av)$/;"	f
+next	rent.c	/^    struct order *next;$/;"	m	struct:order	typeref:struct:order::order	file:
+next_compatible	rent.c	/^int next_compatible(int numOrder, int max2) {$/;"	f
 order	rent.c	/^struct order{$/;"	s	file:
-sort_orders	rent.c	/^void sort_orders() {$/;"	f
-start_time	rent.c	/^    int start_time;$/;"	m	struct:order	file:
-value	rent.c	/^    int value;$/;"	m	struct:order	file:
+process_orders	rent.c	/^int process_orders(int max2) {$/;"	f
+read_orders	rent.c	/^int read_orders(char *buf, FILE *fp) {$/;"	f
+revenue	rent.c	/^    int revenue;$/;"	m	struct:order	file:
+sort_orders	rent.c	/^void sort_orders(int max2) {$/;"	f
+start	rent.c	/^    int start;$/;"	m	struct:order	file:
+trade_id	rent.c	/^    char trade_id[BUFFERMAX];$/;"	m	struct:order	file:
