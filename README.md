@@ -1,4 +1,4 @@
-Notre programme reçoit des offres de trading et calcule le revenu maximim qui peut être réalisé avec ces ordres.
+Notre programme reçoit des offres de trading et calcule le revenu maximum qui peut être réalisé avec ces ordres.
 
 Nous ne savons pas comment il fonctionne, mais nous pouvons vous dire qu'il fonctionne bien.
 

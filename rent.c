@@ -11,7 +11,7 @@ struct order{
 } Orders[MAXORDER];
 
 char buf[BUFFERMAX];
-char id[BUFFERMAX];
+
 int main() {
     int max1;
     fgets(buf, BUFFERMAX, stdin);
@@ -22,6 +22,7 @@ int main() {
         sscanf(buf, "%d", &max2);
         for(int j = 0; j < max2; j++) {
             int a, b, c;
+            char id[BUFFERMAX];
             fgets(buf, BUFFERMAX, stdin);
             sscanf(buf, "%s %d %d %d", id, &a, &b, &c);
             Orders[j].start = a;
@@ -49,16 +50,9 @@ int main() {
         Orders[max2].best      = 0;
         max2++;
         for(int j = max2-2; j >= 0; j--) {
-            int l = j+1; int h = max2; int m; int k;
-            while (l <= h) {
-                m = l + (h - l) / 2;
-                if(Orders[m].start < Orders[j].start + Orders[j].duration)
-                    l = m + 1;
-                else {
-                    k = m;
-                    h = m - 1;
-                }
-            }
+            int k = j+1;
+            while(k <= max2 && Orders[k].start < Orders[j].start + Orders[j].duration)
+                k++;
             Orders[j].best = Orders[j+1].best > Orders[j].best + Orders[k].best ? Orders[j+1].best : Orders[j].best + Orders[k].best;
         }
         printf("%d\n", Orders[0].best);
