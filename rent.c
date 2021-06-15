@@ -46,9 +46,9 @@ int main() {
         }
         fclose(in);
         Orders[max2].start = INFNTY;
-        Orders[max2].duration   = 0;
-        Orders[max2].best      = 0;
-        max2++;
+        Orders[max2].duration = 0;
+        Orders[max2].best = 0;
+        ++max2;
         for(int j = max2-2; j >= 0; j--) {
             int k = j+1;
             while(k <= max2 && Orders[k].start < Orders[j].start + Orders[j].duration)
